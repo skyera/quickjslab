@@ -1,9 +1,9 @@
 # Compiler and flags
 CXX = g++
 CC = gcc
-CXXFLAGS = -std=c++11 -Wall -I/usr/local/include/quickjs
-CFLAGS = -Wall -I/usr/local/include/quickjs
-LDFLAGS = -L/usr/local/lib/quickjs -lquickjs -lm -ldl -lpthread
+CXXFLAGS = -std=c++11 -Wall -I/usr/local/include/quickjs -I/usr/include/quickjs
+CFLAGS = -Wall -I/usr/local/include/quickjs -I/usr/include/quickjs
+LDFLAGS = -L/usr/local/lib/quickjs -L/usr/lib/quickjs -lquickjs -lm -ldl -lpthread
 
 # Target executables
 TARGET_CXX = ex
