@@ -5,7 +5,8 @@
 #include "quickjs-libc.h"
 
 // Define 'console.log' for JavaScript
-static JSValue js_console_log(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
+static JSValue js_console_log(JSContext *ctx, JSValueConst this_val, int argc,
+        JSValueConst *argv) {
     for (int i = 0; i < argc; i++) {
         const char *str = JS_ToCString(ctx, argv[i]);
         printf("%s%s", str ? str : "<null>", i < argc - 1 ? " " : "\n");
@@ -13,25 +14,22 @@ static JSValue js_console_log(JSContext *ctx, JSValueConst this_val, int argc, J
     }
     return JS_UNDEFINED;
 }
-// Define the C function to be exposed as 'process' in JavaScript
-static JSValue js_process(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv) {
-    // Check if we have at least 3 arguments: a, b, and javaobject
+
+static JSValue js_process(JSContext *ctx, JSValueConst this_val, int argc,
+        JSValueConst *argv) {
     if (argc < 3) {
         return JS_ThrowRangeError(ctx, "process() expects 3 arguments");
     }
 
-    // Extract arguments
     int a, b;
     if (JS_ToInt32(ctx, &a, argv[0]) || JS_ToInt32(ctx, &b, argv[1])) {
         return JS_ThrowTypeError(ctx, "a and b must be numbers");
     }
 
-    // Check if the third argument is an object
     if (!JS_IsObject(argv[2])) {
         return JS_ThrowTypeError(ctx, "third argument must be an object");
     }
 
-    // Example logic: Sum a and b, and check if javaobject has a property 'value'
     JSValue value_prop = JS_GetPropertyStr(ctx, argv[2], "value");
     int obj_value = 0;
     if (!JS_IsUndefined(value_prop)) {
@@ -40,7 +38,6 @@ static JSValue js_process(JSContext *ctx, JSValueConst this_val, int argc, JSVal
     }
     JS_FreeValue(ctx, value_prop);
 
-    // Extract 'version' from the object
     JSValue version_prop = JS_GetPropertyStr(ctx, argv[2], "version");
     const char *version = JS_ToCString(ctx, version_prop);
     if (version) {
@@ -48,13 +45,13 @@ static JSValue js_process(JSContext *ctx, JSValueConst this_val, int argc, JSVal
     }
     JS_FreeCString(ctx, version);
     JS_FreeValue(ctx, version_prop);
-    // Return an integer (e.g., a + b + obj_value)
+    
     return JS_NewInt32(ctx, a + b + obj_value);
 }
 
 int main(void) {
     printf("quickjs 2\n");
-    // Initialize QuickJS runtime and context
+    
     JSRuntime *rt = JS_NewRuntime();
     if (!rt) {
         fprintf(stderr, "Failed to create runtime\n");
@@ -72,6 +69,7 @@ int main(void) {
     JSValue global_obj = JS_GetGlobalObject(ctx);
     JS_SetPropertyStr(ctx, global_obj, "process", 
                       JS_NewCFunction(ctx, js_process, "process", 3));
+    
     // Register the 'console' object with 'log' method
     JSValue console = JS_NewObject(ctx);
     JS_SetPropertyStr(ctx, console, "log", 
@@ -87,8 +85,8 @@ int main(void) {
         "let result = process(5, 3, obj);\n"
         "console.log('Result from process:', result);\n";
 
-    // Evaluate the JavaScript code
-    JSValue result = JS_Eval(ctx, js_code, strlen(js_code), "<input>", JS_EVAL_TYPE_GLOBAL);
+    JSValue result = JS_Eval(ctx, js_code, strlen(js_code), "<input>",
+            JS_EVAL_TYPE_GLOBAL);
     if (JS_IsException(result)) {
         JSValue error = JS_GetException(ctx);
         const char *error_str = JS_ToCString(ctx, error);

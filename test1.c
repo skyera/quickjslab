@@ -4,7 +4,8 @@
 #include "quickjs.h"
 #include "quickjs-libc.h"
 
-JSValue console_log(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv) {
+JSValue console_log(JSContext* ctx, JSValueConst this_val, int argc,
+        JSValueConst* argv) {
     for (int i = 0; i < argc; i++) {
         const char* str = JS_ToCString(ctx, argv[i]);
         if (str) {
@@ -16,14 +17,16 @@ JSValue console_log(JSContext* ctx, JSValueConst this_val, int argc, JSValueCons
     return JS_UNDEFINED;
 }
 
-JSValue add(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv) {
+JSValue add(JSContext* ctx, JSValueConst this_val, int argc,
+        JSValueConst* argv) {
     int a, b;
-    JS_ToInt32(ctx, &a, argv[0]); // Convert first argument to int
-    JS_ToInt32(ctx, &b, argv[1]); // Convert second argument to int
-    return JS_NewInt32(ctx, a + b); // Return the sum
+
+    JS_ToInt32(ctx, &a, argv[0]);
+    JS_ToInt32(ctx, &b, argv[1]);
+    return JS_NewInt32(ctx, a + b);
 }
 
-char* readFile(const char* filename) {
+char* read_file(const char* filename) {
     FILE* file = fopen(filename, "rb");
     if (!file) {
         perror("Failed to open file");
@@ -56,7 +59,7 @@ int main(int argc, char* argv[]) {
     }
 
     const char* filename = argv[1];
-    char* script = readFile(filename);
+    char* script = read_file(filename);
     if (!script) {
         return 1;
     }
