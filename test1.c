@@ -19,6 +19,9 @@ JSValue console_log(JSContext* ctx, JSValueConst this_val, int argc,
 
 JSValue add(JSContext* ctx, JSValueConst this_val, int argc,
         JSValueConst* argv) {
+    if (argc != 2) {
+        return JS_ThrowTypeError(ctx, "add() expects 2 arguments");
+    }
     int a, b;
 
     JS_ToInt32(ctx, &a, argv[0]);
