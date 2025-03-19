@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
+    printf("quickjs 3\n");
     if (argc < 2) {
         fprintf(stderr, "Usage: %s script.js\n", argv[0]);
         return 1;

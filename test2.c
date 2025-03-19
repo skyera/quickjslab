@@ -53,6 +53,7 @@ static JSValue js_process(JSContext *ctx, JSValueConst this_val, int argc, JSVal
 }
 
 int main(void) {
+    printf("quickjs 2\n");
     // Initialize QuickJS runtime and context
     JSRuntime *rt = JS_NewRuntime();
     if (!rt) {

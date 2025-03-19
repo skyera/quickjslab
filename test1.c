@@ -49,6 +49,7 @@ char* readFile(const char* filename) {
 }
 
 int main(int argc, char* argv[]) {
+    printf("quickjs 1\n");
     if (argc < 2) {
         printf("Usage: %s <javascript-file>\n", argv[0]);
         return 1;
