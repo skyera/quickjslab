@@ -36,9 +36,18 @@ static JSValue js_process(JSContext *ctx, JSValueConst this_val, int argc, JSVal
     int obj_value = 0;
     if (!JS_IsUndefined(value_prop)) {
         JS_ToInt32(ctx, &obj_value, value_prop);
+        printf("Object value: %d\n", obj_value);
     }
     JS_FreeValue(ctx, value_prop);
 
+    // Extract 'version' from the object
+    JSValue version_prop = JS_GetPropertyStr(ctx, argv[2], "version");
+    const char *version = JS_ToCString(ctx, version_prop);
+    if (version) {
+        printf("Object version: %s\n", version);  // Print version for demonstration
+    }
+    JS_FreeCString(ctx, version);
+    JS_FreeValue(ctx, version_prop);
     // Return an integer (e.g., a + b + obj_value)
     return JS_NewInt32(ctx, a + b + obj_value);
 }
@@ -73,7 +82,7 @@ int main(void) {
 
     // JavaScript code to execute
     const char *js_code = 
-        "let obj = { value: 10 };\n"
+        "let obj = { value: 10, version: \"1.0\" };\n"
         "let result = process(5, 3, obj);\n"
         "console.log('Result from process:', result);\n";
 
