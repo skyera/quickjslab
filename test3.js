@@ -12,3 +12,4 @@ var platform = os.platform;
 std.puts("os platform: ", platform, "\n");
 
 print("hello");
+print(scriptArgs);
