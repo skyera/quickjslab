@@ -10,7 +10,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Create a new QuickJS runtime and context
     JSRuntime *rt = JS_NewRuntime();
     if (!rt) {
         fprintf(stderr, "Failed to create QuickJS runtime\n");
@@ -29,7 +28,6 @@ int main(int argc, char *argv[]) {
     js_init_module_std(ctx, "std");
     js_init_module_os(ctx, "os");
 
-    // Read the script file
     FILE *fp = fopen(argv[1], "rb");
     if (!fp) {
         perror("fopen");
@@ -52,7 +50,6 @@ int main(int argc, char *argv[]) {
     script[size] = '\0';
     fclose(fp);
 
-    // Execute the script
     JSValue result = JS_Eval(ctx, script, size, argv[1], JS_EVAL_TYPE_MODULE);
     if (JS_IsException(result)) {
         js_std_dump_error(ctx);
@@ -60,7 +57,6 @@ int main(int argc, char *argv[]) {
     JS_FreeValue(ctx, result);
     free(script);
 
-    // Cleanup
     js_std_free_handlers(rt);
     JS_FreeContext(ctx);
     JS_FreeRuntime(rt);
