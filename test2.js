@@ -22,3 +22,12 @@ std.out.puts("Loaded Config: " + JSON.stringify(loadedConfig, null, 2) + "\n");
 
 var myobj = {key1:"hello", key2:"world"};
 std.out.puts("myobj: ", JSON.stringify(myobj), "\n");
+
+myobj.mystring = "sky";
+var myfunc = function() {
+  return this.mystring.toUpperCase();
+}
+
+myobj.myfunc = myfunc;
+let result = myobj.myfunc();
+std.out.puts("result: ", result, "\n");
