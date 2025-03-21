@@ -4,7 +4,6 @@
 #include "quickjs.h"
 #include "quickjs-libc.h"
 
-// Define 'console.log' for JavaScript
 static JSValue js_console_log(JSContext *ctx, JSValueConst this_val, int argc,
         JSValueConst *argv) {
     for (int i = 0; i < argc; i++) {
@@ -41,7 +40,7 @@ static JSValue js_process(JSContext *ctx, JSValueConst this_val, int argc,
     JSValue version_prop = JS_GetPropertyStr(ctx, argv[2], "version");
     const char *version = JS_ToCString(ctx, version_prop);
     if (version) {
-        printf("Object version: %s\n", version);  // Print version for demonstration
+        printf("Object version: %s\n", version);
     }
     JS_FreeCString(ctx, version);
     JS_FreeValue(ctx, version_prop);
@@ -65,28 +64,24 @@ int main(void) {
         return 1;
     }
 
-    // Register the 'process' function in the global object
     JSValue global_obj = JS_GetGlobalObject(ctx);
     JS_SetPropertyStr(ctx, global_obj, "process", 
                       JS_NewCFunction(ctx, js_process, "process", 3));
     
-    // Register the 'console' object with 'log' method
     JSValue console = JS_NewObject(ctx);
     JS_SetPropertyStr(ctx, console, "log", 
                       JS_NewCFunction(ctx, js_console_log, "log", 1));
     JS_SetPropertyStr(ctx, global_obj, "console", console);
 
-    // Free the global object reference
     JS_FreeValue(ctx, global_obj);
 
-    // JavaScript code to execute
     const char *js_code = 
         "let obj = { value: 10, version: \"1.0\" };\n"
         "let result = process(5, 3, obj);\n"
         "console.log('Result from process:', result);\n";
 
     JSValue result = JS_Eval(ctx, js_code, strlen(js_code), "<input>",
-            JS_EVAL_TYPE_GLOBAL);
+                             JS_EVAL_TYPE_GLOBAL);
     if (JS_IsException(result)) {
         JSValue error = JS_GetException(ctx);
         const char *error_str = JS_ToCString(ctx, error);
@@ -96,7 +91,6 @@ int main(void) {
     }
     JS_FreeValue(ctx, result);
 
-    // Clean up
     JS_FreeContext(ctx);
     JS_FreeRuntime(rt);
 
