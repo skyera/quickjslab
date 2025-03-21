@@ -17,7 +17,7 @@ JSValue console_log(JSContext* ctx, JSValueConst this_val, int argc,
     return JS_UNDEFINED;
 }
 
-JSValue add(JSContext* ctx, JSValueConst this_val, int argc,
+JSValue js_add(JSContext* ctx, JSValueConst this_val, int argc,
         JSValueConst* argv) {
     if (argc != 2) {
         return JS_ThrowTypeError(ctx, "add() expects 2 arguments");
@@ -48,7 +48,7 @@ char* read_file(const char* filename) {
     }
 
     fread(buffer, 1, fileSize, file);
-    buffer[fileSize] = '\0'; // Null-terminate the string
+    buffer[fileSize] = '\0';
     fclose(file);
 
     return buffer;
@@ -74,13 +74,16 @@ int main(int argc, char* argv[]) {
 
     JSValue global = JS_GetGlobalObject(ctx);
     JSValue console = JS_NewObject(ctx);
-    JS_SetPropertyStr(ctx, console, "log", JS_NewCFunction(ctx, console_log, "log", 1));
+    JS_SetPropertyStr(ctx, console, "log",
+                      JS_NewCFunction(ctx, console_log, "log", 1));
     JS_SetPropertyStr(ctx, global, "console", console);
     JS_FreeValue(ctx, global);
 
-    JS_SetPropertyStr(ctx, global, "add", JS_NewCFunction(ctx, add, "add", 2));
+    JS_SetPropertyStr(ctx, global, "add",
+                      JS_NewCFunction(ctx, js_add, "add", 2));
 
-    JSValue result = JS_Eval(ctx, script, strlen(script), filename, JS_EVAL_TYPE_MODULE);
+    JSValue result = JS_Eval(ctx, script, strlen(script), filename,
+                             JS_EVAL_TYPE_GLOBAL);
 
     if (JS_IsException(result)) {
         JSValue exception = JS_GetException(ctx);
