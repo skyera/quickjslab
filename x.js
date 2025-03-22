@@ -126,3 +126,18 @@ console.log(numbers);
 
 numbers.sort();
 console.log(numbers);
+
+function sum() {
+    var result = 0,
+        i = 0,
+        len = arguments.length;
+
+    while (i < len) {
+        result += arguments[i];
+        i++;
+    }
+    return result;
+}
+
+print(sum(1,2));
+print(sum.length);
