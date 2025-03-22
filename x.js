@@ -571,3 +571,17 @@ var person1 = new PersonX("John");
 person1.sayName();
 print(person1.toString());
 print(person1.constructor === PersonX);
+
+// Built-in prototypes
+Array.prototype.sum = function() {
+    return this.reduce(function(prev, current) {
+        return prev + current;
+    });
+};
+var numbers = [1, 5, 8, 4, 7, 10, 2, 6];
+print(numbers.sum());
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.substring(1);
+};
+print("hello".capitalize());
