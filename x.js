@@ -66,3 +66,63 @@ print(colors.length);
 print(colors[0]);
 print(colors[1]);
 print(colors[2]);
+
+var array = [];
+array.push(12345);
+array.push("Code");
+print(array);
+
+var array = new Array();
+array["push"](12345);
+array["push"]("Code");
+print(array);
+
+function reflect() {
+    return value;
+}
+
+console.log(typeof reflect);
+
+var items = [];
+var object = {};
+console.log(items instanceof Array);
+console.log(object instanceof Object);
+console.log(reflect instanceof Function);
+console.log(Array.isArray(items));
+
+var name = "John";
+name.last = "Doe";
+console.log(name.last);
+
+console.log(name instanceof String);
+console.log(name instanceof Object);
+
+var result = add(1, 2);
+print(result);
+function add(num1, num2) {
+    return num1 + num2;
+}
+
+var add1 = function (num1, num2) {
+    return num1 + num2;
+};
+var result = add1(1, 2);
+print(result);
+
+// function as value
+function sayHi() {
+    console.log("Hi");
+}
+
+sayHi();
+var sayHi2 = sayHi;
+sayHi2();
+
+var numbers = [1, 5, 8, 4, 7, 10, 2, 6];
+numbers.sort(function(first, second) {
+    return second - first;    
+});
+console.log(numbers);
+
+numbers.sort();
+console.log(numbers);
