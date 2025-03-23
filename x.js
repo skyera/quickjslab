@@ -585,3 +585,25 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.substring(1);
 };
 print("hello".capitalize());
+print("__proto__  === prototype", person1.__proto__ === PersonX.prototype);
+
+// for of: iterate in array
+var myPets = "";
+var pets = ["cat", "dog", "hamster", "parrot"];
+for (var pet of pets) {
+    myPets += pet + ", ";
+}
+print(myPets);
+
+var m = Math.min(42, 6, 27);
+console.log(m);
+
+// bind
+var product = function(a, b) {
+    return a * b;
+}
+var doubler = product.bind(this, 2);
+var x = doubler(8);
+print(x);
+
+
