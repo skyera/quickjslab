@@ -177,3 +177,25 @@ class Person {
 let person3 = new Person("Alice", 25);
 console.log(person3.greet());
 console.log(person3.haveBirthday());
+
+// dir
+let [files, err] = os.readdir(".");
+if (err === 0) {
+    console.log("Files in current directory:");
+    files.forEach(file => console.log(" - ", file));
+} else {
+    console.log("Error reading directory:", err);
+}
+
+// OOP with prototype
+function Car(make, model) {
+    this.make = make;
+    this.model = model;
+}
+
+Car.prototype.describe = function() {
+    return `This is a ${this.make} ${this.model}.`;
+};
+
+let myCar = new Car("Toyota", "Camry");
+console.log(myCar.describe());
