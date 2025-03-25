@@ -71,6 +71,59 @@ try {
     console.log(e);
 }
 
-let [status, output] = os.exec(["ls", "-l"]);
-console.log("Status:", status);
-console.log("Output:", output);
+//let [status, output] = os.exec(["ls", "-l"]);
+//console.log("Status:", status);
+//console.log("Output:", output);
+
+// Error handling
+try {
+    let result = undefinedvariable + 10;
+} catch (error) {
+    console.log("Error:", error.message);
+} finally {
+    console.log("Execution completed.");
+}
+
+let person2= {
+    name: "John",
+    age: 30,
+    greet() {
+        return `Hello, my name is ${this.name} and I am ${this.age} years old.`;
+    }
+};
+console.log(person2.greet());
+
+// array
+let fruits = ["apple", "banana", "cherry"];
+fruits.push("orange");
+
+console.log("Fruits:", fruits.join(", "));
+console.log("Mapped: ", fruits.map(fruit => fruit.toUpperCase()));
+console.log(    
+    "Filtered: ", fruits.filter(fruit => fruit.length > 5)
+);
+
+function factorial(n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+for (let i = 1; i <= 5; i++) {
+    console.log(`Factorial of ${i}! = ${factorial(i)}`);
+}
+
+// Promise
+function delay(ms) {
+    return new Promise(resolve => {
+        console.log(`waiting ${ms} ms...`);
+        resolve();
+    });
+}
+
+delay(1000).then(() => console.log("Done waiting"));
+
+// str
+let text = "quickjs is fast";
+console.log("Capitalized:", text.replace(/\b\w/g, c => c.toUpperCase()));
+console.log("Split:", text.split(" "));
+console.log("Includes 'fast':", text.includes("fast"));

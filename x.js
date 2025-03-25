@@ -606,4 +606,23 @@ var doubler = product.bind(this, 2);
 var x = doubler(8);
 print(x);
 
+// Math
+var x = Math.pow(2, 53);
+console.log(x);
+console.log(Math.PI);
 
+// Date
+console.log("\n-- Date");
+var then = new Date(2016, 10, 10);
+var now = new Date();
+var diff = now - then;
+console.log(diff);
+console.log(then.getFullYear());
+console.log(then.getMonth());
+console.log(then.getDate());
+console.log(then.getDay());
+console.log(then.getHours());
+console.log(then.getMinutes());
+console.log(then.getSeconds());
+console.log(then.getMilliseconds());
+console.log(then.getTime());
