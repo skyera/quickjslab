@@ -55,7 +55,8 @@ let person = {
     }
 };
 
-let jsonString = JSON.stringify(person, null, 2);console.log("JSON string:\n" + jsonString);
+let jsonString = JSON.stringify(person, null, 2);
+console.log("JSON string:\n" + jsonString);
 
 let parsedPerson = JSON.parse(jsonString);
 console.log("Parsed person:", parsedPerson.hobbies);
@@ -127,3 +128,32 @@ let text = "quickjs is fast";
 console.log("Capitalized:", text.replace(/\b\w/g, c => c.toUpperCase()));
 console.log("Split:", text.split(" "));
 console.log("Includes 'fast':", text.includes("fast"));
+
+// command args
+console.log("Script args:", scriptArgs);
+
+function countLines(filename) {
+    let file = std.open(filename, "r");
+    if (!file) {
+        console.log("File not found:", filename);
+        return;
+    }
+
+    let content = file.readAsString();
+    file.close();
+    let lines = content.split("\n").length;
+    console.log(`Lines in ${filename}: ${lines}`);
+}
+
+countLines(scriptArgs[1]);
+
+// performance test
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+let start = Date.now();
+let result = fibonacci(35);
+let end = Date.now();
+console.log(`Fibonacci(40) = ${result} (took ${end - start} ms)`);
