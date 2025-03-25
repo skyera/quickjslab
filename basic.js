@@ -157,3 +157,23 @@ let start = Date.now();
 let result = fibonacci(35);
 let end = Date.now();
 console.log(`Fibonacci(40) = ${result} (took ${end - start} ms)`);
+
+class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    greet() {
+        return `Hello, my name is ${this.name} and I am ${this.age} years old.`;
+    }
+
+    haveBirthday() {
+        this.age++;
+        return `Happy birthday, ${this.name}! You are now ${this.age} years old.`;
+    }
+}
+
+let person3 = new Person("Alice", 25);
+console.log(person3.greet());
+console.log(person3.haveBirthday());
