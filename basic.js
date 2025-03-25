@@ -199,3 +199,39 @@ Car.prototype.describe = function() {
 
 let myCar = new Car("Toyota", "Camry");
 console.log(myCar.describe());
+
+function fibIterative(n) {
+    let a = 0, b = 1;
+    if (n <= 1) return n;
+    for (let i = 2; i <= n; i++) {
+        [a, b] = [b, a + b];
+    }
+    return b;
+}
+console.log("Iterative Fibonacci(40):", fibIterative(40));
+
+// string reverse
+function reverse1(str) {
+    return str.split("").reverse().join("");
+}
+
+function reverse2(str) {
+    let reversed = "";
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
+
+let text1 = "QuickJS";
+console.log("Reverse 1:", reverse1(text1));
+console.log("Reverse 2:", reverse2(text1));
+
+// palindrome
+function isPalindrome(str) {
+    str = str.toLowerCase().replace(/[^a-z0-9]/g, "");
+    return str === str.split("").reverse().join("");
+}
+
+console.log(isPalindrome("A man, a plan, a canal: Panama"));
+console.log(isPalindrome("race a car"));
