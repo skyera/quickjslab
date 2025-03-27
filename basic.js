@@ -3,7 +3,10 @@ import * as std from "std";
 
 import { add, multiply } from "./math.js";
 
-let name = "Alice";
+console.log("Hello, QuickJS!");
+let name = 'Alice';
+console.log(`Hello, ${name}!`);
+
 let age = 20;
 console.log(`Hello, ${name}! You are ${age} years old.`);
 
@@ -29,6 +32,7 @@ console.log("doubled:", doubled);
 //     }
 // }, 1000);
 
+// file
 let file = std.open("output.txt", "w");
 file.puts("Hello, QuickJS!\n");
 file.puts("This is a test.\n");
@@ -52,14 +56,23 @@ let person = {
         city: "Anytown",
         state: "CA",
         zip: "12345"
+    },
+    greet() {
+        return `Hello, my name is ${this.name} and I am ${this.age} years old.`;
     }
 };
 
+// json
 let jsonString = JSON.stringify(person, null, 2);
 console.log("JSON string:\n" + jsonString);
 
 let parsedPerson = JSON.parse(jsonString);
 console.log("Parsed person:", parsedPerson.hobbies);
+
+console.log(person.greet());
+person.age += 1;
+console.log("Updated age:", person.age);
+
 
 console.log("os platform:", os.platform);
 let cwd = os.getcwd();
@@ -104,6 +117,7 @@ console.log(
     "Filtered: ", fruits.filter(fruit => fruit.length > 5)
 );
 
+// factorial
 function factorial(n) {
     if (n <= 1) return 1;
     return n * factorial(n - 1);
@@ -235,3 +249,20 @@ function isPalindrome(str) {
 
 console.log(isPalindrome("A man, a plan, a canal: Panama"));
 console.log(isPalindrome("race a car"));
+
+// closure
+function counter() {
+    let count = 0;
+    return {
+        increment: () => count++,
+        decrement: () => count--,
+        getCount: () => count
+    };
+}
+
+let myCounter = counter();
+console.log(myCounter.getCount());
+myCounter.increment();
+console.log(myCounter.getCount());
+myCounter.decrement();
+console.log(myCounter.getCount());
