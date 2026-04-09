@@ -214,4 +214,13 @@ cloned.b.d.push(4);
 console.log("\nOriginal:", JSON.stringify(original));
 console.log("Cloned:", JSON.stringify(cloned));
 
+// std - operation
+let filename = "output.txt";
+let file = std.open(filename, "w");
+file.puts("Hello, QuickJS!");
+file.close();
+console.log("File written to:", filename);
+
+std.printf("Number: %d\n", 42);
+
 print("\n=== Exercise Complete! ===");
