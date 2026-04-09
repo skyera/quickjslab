@@ -223,4 +223,25 @@ console.log("File written to:", filename);
 
 std.printf("Number: %d\n", 42);
 
+// os - system info
+let cwd = os.getcwd();
+console.log("Platform:", os.platform);
+console.log("CWD:", Array.isArray(cwd) ? cwd[0] : cwd);
+
+// os - execute command (output goes directly to stdout)
+os.exec(["ls", "-l"]);
+
+// os - read directory (os.readdir returns [[entries], error])
+let dirResult = os.readdir(".");
+let files = dirResult[0];
+let dirErr = dirResult[1];
+if (dirErr === 0 && files) {
+    print("Files in current directory:");
+    for (let i = 0; i < files.length; i++) {
+        print(" - " + files[i]);
+    }
+} else {
+    console.log("Directory read error:", dirErr);
+}
+
 print("\n=== Exercise Complete! ===");
