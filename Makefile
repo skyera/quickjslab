@@ -10,25 +10,32 @@ TARGET_C1 = t1
 TARGET_C2 = t2
 TARGET_C3 = t3
 TARGET_C4 = t4
+TARGET_SERVER = qjs_server
 
 # Source files
 SRCS_C1 = test1.c
 SRCS_C2 = test2.c
 SRCS_C3 = test3.c
 SRCS_C4 = test4.c
+SRCS_SERVER = qjs_server.cpp
 
 # Object files
 OBJS_C1 = $(SRCS_C1:.c=.o)
 OBJS_C2 = $(SRCS_C2:.c=.o)
 OBJS_C3 = $(SRCS_C3:.c=.o)
 OBJS_C4 = $(SRCS_C4:.c=.o)
+OBJS_SERVER = $(SRCS_SERVER:.cpp=.o)
 
 # Default target
-all: $(TARGET_C1) $(TARGET_C2) $(TARGET_C3) $(TARGET_C4)
+all: $(TARGET_C1) $(TARGET_C2) $(TARGET_C3) $(TARGET_C4) $(TARGET_SERVER)
 
 # Link the C++ executable
 $(TARGET_C1): $(OBJS_C1)
 	$(CC) $(OBJS_C1) -o $(TARGET_C1) $(LDFLAGS)
+
+# Link the server executable
+$(TARGET_SERVER): $(OBJS_SERVER)
+	$(CXX) $(OBJS_SERVER) -o $(TARGET_SERVER) $(LDFLAGS)
 
 # Link the first C executable (embedjs_exe)
 $(TARGET_C2): $(OBJS_C2)
