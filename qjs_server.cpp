@@ -10,10 +10,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <dirent.h>
+#include <algorithm>
 #include <quickjs.h>
 #include <quickjs-libc.h>
 
 std::string global_output;
+JSRuntime* shared_rt = nullptr;
 
 JSValue console_log(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv) {
     for (int i = 0; i < argc; i++) {
@@ -30,8 +32,9 @@ JSValue console_log(JSContext* ctx, JSValueConst this_val, int argc, JSValueCons
 
 std::string run_js(const char* filename) {
     global_output = "";
-    JSRuntime* rt = JS_NewRuntime();
-    JSContext* ctx = JS_NewContext(rt);
+    if (!shared_rt) shared_rt = JS_NewRuntime();
+    
+    JSContext* ctx = JS_NewContext(shared_rt);
 
     js_init_module_std(ctx, "std");
     js_init_module_os(ctx, "os");
@@ -43,6 +46,11 @@ std::string run_js(const char* filename) {
     JS_FreeValue(ctx, global);
 
     std::ifstream t(filename);
+    if (!t.is_open()) {
+        JS_FreeContext(ctx);
+        return "Error: Could not open script file.\n";
+    }
+    
     std::string script((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
 
     JSValue result = JS_Eval(ctx, script.c_str(), script.length(), filename, JS_EVAL_TYPE_GLOBAL);
@@ -51,7 +59,7 @@ std::string run_js(const char* filename) {
         JSValue exception = JS_GetException(ctx);
         const char* error = JS_ToCString(ctx, exception);
         global_output += "Error: ";
-        global_output += error;
+        global_output += (error ? error : "Unknown error");
         global_output += "\n";
         JS_FreeCString(ctx, error);
         JS_FreeValue(ctx, exception);
@@ -59,7 +67,6 @@ std::string run_js(const char* filename) {
 
     JS_FreeValue(ctx, result);
     JS_FreeContext(ctx);
-    JS_FreeRuntime(rt);
 
     return global_output;
 }
@@ -77,7 +84,20 @@ std::vector<std::string> list_scripts() {
         }
         closedir(dir);
     }
+    std::sort(scripts.begin(), scripts.end());
     return scripts;
+}
+
+// Simple security check for path traversal
+bool is_safe_path(const std::string& path) {
+    if (path.empty()) return false;
+    if (path.find("..") != std::string::npos) return false;
+    if (path[0] == '/' || path[0] == '\\') return false;
+    
+    // Only allow .js files
+    if (path.length() < 4 || path.substr(path.length() - 3) != ".js") return false;
+    
+    return true;
 }
 
 void start_web_server(int port) {
@@ -100,12 +120,12 @@ void start_web_server(int port) {
         return;
     }
 
-    if (listen(server_fd, 3) < 0) {
+    if (listen(server_fd, 10) < 0) {
         perror("Listen failed");
         return;
     }
 
-    std::cout << "Web server started on port " << port << std::endl;
+    std::cout << "Web server started on http://localhost:" << port << std::endl;
 
     while (true) {
         struct sockaddr_in client_address;
@@ -116,15 +136,15 @@ void start_web_server(int port) {
             continue;
         }
 
-        char buffer[1024] = {0};
-        read(new_socket, buffer, 1024);
+        char buffer[2048] = {0};
+        read(new_socket, buffer, 2047);
 
         std::string request(buffer);
         std::string response;
 
-        if (request.find("GET / ") != std::string::npos) {
+        if (request.find("GET / ") != std::string::npos || request.find("GET /index.html") != std::string::npos) {
             response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-            response += "<html><body><h1>Available Scripts</h1><ul>";
+            response += "<html><head><title>QuickJS Lab</title></head><body><h1>Available Scripts</h1><ul>";
             auto scripts = list_scripts();
             for (const auto& script : scripts) {
                 response += "<li><a href=\"/run?script=" + script + "\">" + script + "</a></li>";
@@ -134,10 +154,15 @@ void start_web_server(int port) {
             size_t start = request.find("script=") + 7;
             size_t end = request.find(" ", start);
             std::string script_name = request.substr(start, end - start);
-
-            std::string output = run_js(script_name.c_str());
-            response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
-            response += "Output for " + script_name + ":\n\n" + output;
+            
+            // URL decode simple (optional but good)
+            if (is_safe_path(script_name)) {
+                std::string output = run_js(script_name.c_str());
+                response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+                response += "Output for " + script_name + ":\n\n" + output;
+            } else {
+                response = "HTTP/1.1 403 Forbidden\r\nContent-Type: text/plain\r\n\r\nForbidden: Invalid script path.";
+            }
         } else {
             response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\n\r\nNot Found";
         }
@@ -162,7 +187,7 @@ int main(int argc, char* argv[]) {
     if (web_mode) {
         start_web_server(port);
     } else {
-        if (argc < 2) {
+        if (argc < 2 || (argc == 2 && web_mode)) {
             std::cout << "Usage: " << argv[0] << " [-w] [-p port] <script.js>" << std::endl;
             return 1;
         }
@@ -170,5 +195,6 @@ int main(int argc, char* argv[]) {
         std::cout << output;
     }
 
+    if (shared_rt) JS_FreeRuntime(shared_rt);
     return 0;
 }

@@ -77,10 +77,10 @@ int main(int argc, char* argv[]) {
     JS_SetPropertyStr(ctx, console, "log",
                       JS_NewCFunction(ctx, console_log, "log", 1));
     JS_SetPropertyStr(ctx, global, "console", console);
-    JS_FreeValue(ctx, global);
 
     JS_SetPropertyStr(ctx, global, "add",
                       JS_NewCFunction(ctx, js_add, "add", 2));
+    JS_FreeValue(ctx, global);
 
     JSValue result = JS_Eval(ctx, script, strlen(script), filename,
                              JS_EVAL_TYPE_MODULE);

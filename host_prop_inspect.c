@@ -27,7 +27,9 @@ int main() {
     JSValue result = JS_Eval(ctx, code, strlen(code), "<input>", JS_EVAL_TYPE_GLOBAL);
     if (JS_IsException(result)) {
         JSValue err = JS_GetException(ctx);
-        printf("Error: %s\n", JS_ToCString(ctx, err));
+        const char *err_str = JS_ToCString(ctx, err);
+        printf("Error: %s\n", err_str);
+        JS_FreeCString(ctx, err_str);
         JS_FreeValue(ctx, err);
     }
     JS_FreeValue(ctx, result);
