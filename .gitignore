@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+host_file_eval
+host_obj_interop
+host_std_runtime
+host_prop_inspect
+qjs_server
+t1
+t2
+t3
+t4
