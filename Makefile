@@ -1,49 +1,35 @@
+# Define the submodule path
+QJS_DIR = quickjs
+
 # Compiler and flags
 CXX = g++
 CC = gcc
-CXXFLAGS = -std=c++11 -Wall -I/usr/local/include/quickjs -I/usr/include/quickjs
-CFLAGS = -Wall -I/usr/local/include/quickjs -I/usr/include/quickjs
-LDFLAGS = -L/usr/local/lib/quickjs -L/usr/lib/quickjs -lquickjs -lm -ldl -lpthread
+CXXFLAGS = -std=c++11 -Wall -I$(QJS_DIR)
+CFLAGS = -Wall -I$(QJS_DIR)
+LDFLAGS = -L$(QJS_DIR) -lquickjs -lm -ldl -lpthread
 
 # Target executables
-TARGET_C1 = t1
-TARGET_C2 = t2
-TARGET_C3 = t3
-TARGET_C4 = t4
-
-# Source files
-SRCS_C1 = test1.c
-SRCS_C2 = test2.c
-SRCS_C3 = test3.c
-SRCS_C4 = test4.c
-
-# Object files
-OBJS_C1 = $(SRCS_C1:.c=.o)
-OBJS_C2 = $(SRCS_C2:.c=.o)
-OBJS_C3 = $(SRCS_C3:.c=.o)
-OBJS_C4 = $(SRCS_C4:.c=.o)
+TARGETS = host_file_eval host_obj_interop host_std_runtime host_prop_inspect
 
 # Default target
-all: $(TARGET_C1) $(TARGET_C2) $(TARGET_C3) $(TARGET_C4)
+all: $(QJS_DIR)/libquickjs.a $(TARGETS)
 
-# Link the C++ executable
-$(TARGET_C1): $(OBJS_C1)
-	$(CC) $(OBJS_C1) -o $(TARGET_C1) $(LDFLAGS)
+# Build QuickJS library in submodule
+$(QJS_DIR)/libquickjs.a:
+	$(MAKE) -C $(QJS_DIR) libquickjs.a
 
-# Link the first C executable (embedjs_exe)
-$(TARGET_C2): $(OBJS_C2)
-	$(CC) $(OBJS_C2) -o $(TARGET_C2) $(LDFLAGS)
+# Link the executables
+host_file_eval: host_file_eval.o $(QJS_DIR)/libquickjs.a
+	$(CC) host_file_eval.o -o host_file_eval $(LDFLAGS)
 
-# Link the second C executable (embedjs1_exe)
-$(TARGET_C3): $(OBJS_C3)
-	$(CC) $(OBJS_C3) -o $(TARGET_C3) $(LDFLAGS)
+host_obj_interop: host_obj_interop.o $(QJS_DIR)/libquickjs.a
+	$(CC) host_obj_interop.o -o host_obj_interop $(LDFLAGS)
 
-$(TARGET_C4): $(OBJS_C4)
-	$(CC) $(OBJS_C4) -o $(TARGET_C4) $(LDFLAGS)
+host_std_runtime: host_std_runtime.o $(QJS_DIR)/libquickjs.a
+	$(CC) host_std_runtime.o -o host_std_runtime $(LDFLAGS)
 
-# Compile C++ source files into object files
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+host_prop_inspect: host_prop_inspect.o $(QJS_DIR)/libquickjs.a
+	$(CC) host_prop_inspect.o -o host_prop_inspect $(LDFLAGS)
 
 # Compile C source files into object files
 %.o: %.c
@@ -51,7 +37,8 @@ $(TARGET_C4): $(OBJS_C4)
 
 # Clean up build files
 clean:
-	rm -f $(OBJS_C1) $(OBJS_C2) $(OBJS_C3) $(TARGET_C1) $(TARGET_C2) $(TARGET_C3) $(TARGET_C4)
+	rm -f *.o $(TARGETS) t1 t2 t3 t4
+	$(MAKE) -C $(QJS_DIR) clean
 
 # Phony targets
 .PHONY: all clean

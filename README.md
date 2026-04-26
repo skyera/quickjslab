@@ -1,5 +1,5 @@
 # quickjslab
-QuickJS - JavaScript runtime and compiler
+QuickJS - JavaScript runtime and compiler laboratory
 
 ```
   ___        _      _       _ ____    _          _
@@ -10,28 +10,40 @@ QuickJS - JavaScript runtime and compiler
 
 ```
 
-## Run JavaScript
+## Setup
+
+This repository uses QuickJS as a git submodule. To clone and build:
 
 ```bash
-# Run a JS file
-qjs ex1.js
+# Clone with submodules
+git clone --recursive https://github.com/yourusername/quickjslab.git
+cd quickjslab
 
-# Run inline code
-qjs -e 'console.log("Hello!")'
+# Or if already cloned
+git submodule update --init
+
+# Build everything
+make
 ```
 
-## Compile JS to Binary
+## Embedding Examples (C)
 
-```bash
-# Compile to standalone binary
-qjsc -o myapp ex1.js
+These executables demonstrate how to host QuickJS in a C application:
 
-# Run the binary
-./myapp
+- `./host_file_eval demo_io_json.js` - Evaluate a file with custom C functions.
+- `./host_obj_interop` - Direct C/JS object property interop.
+- `./host_std_runtime demo_os_platform.js` - Full runtime with `std` and `os` modules.
+- `./host_prop_inspect` - Inspect JS object metadata from C.
 
-# Include std/os modules
-qjsc -o myapp -m ex1.js
-```
+## JavaScript Demos
+
+Run these using the standalone `qjs` interpreter (built in `quickjs/qjs`):
+
+- `js_fundamentals.js` - ES6+ language basics.
+- `qjs_feature_tour.js` - QuickJS specific module features.
+- `visual_demos.js` - Mandelbrot, Prime Spirals, and ANSI effects.
+- `js_internals_deep_dive.js` - Prototypes, descriptors, and `this` context.
+- `todo_cli_app.js` - Interactive CLI application example.
 
 ## QuickJS Modules
 
@@ -41,9 +53,4 @@ qjsc -o myapp -m ex1.js
 | `os` | System calls (`os.exec`, `os.readdir`, `os.sleep`) |
 | `Math` | Math functions |
 | `JSON` | Parse/stringify |
-
-## Examples
-
-- `ex1.js` - JavaScript basics exercise
-- `basic.js` - QuickJS features demo
-- `fib.js` - Fibonacci implementations
+```
