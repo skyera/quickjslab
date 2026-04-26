@@ -9,7 +9,7 @@ CFLAGS = -Wall -I$(QJS_DIR)
 LDFLAGS = -L$(QJS_DIR) -lquickjs -lm -ldl -lpthread
 
 # Target executables
-TARGETS = host_file_eval host_obj_interop host_std_runtime host_prop_inspect
+TARGETS = host_file_eval host_obj_interop host_std_runtime host_prop_inspect qjs_server
 
 # Default target
 all: $(QJS_DIR)/libquickjs.a $(TARGETS)
@@ -30,6 +30,13 @@ host_std_runtime: host_std_runtime.o $(QJS_DIR)/libquickjs.a
 
 host_prop_inspect: host_prop_inspect.o $(QJS_DIR)/libquickjs.a
 	$(CC) host_prop_inspect.o -o host_prop_inspect $(LDFLAGS)
+
+qjs_server: qjs_server.o $(QJS_DIR)/libquickjs.a
+	$(CXX) qjs_server.o -o qjs_server $(LDFLAGS)
+
+# Compile C++ source files into object files
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile C source files into object files
 %.o: %.c
