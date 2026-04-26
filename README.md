@@ -34,6 +34,7 @@ These executables demonstrate how to host QuickJS in a C application:
 - `./host_obj_interop` - Direct C/JS object property interop.
 - `./host_std_runtime demo_os_platform.js` - Full runtime with `std` and `os` modules.
 - `./host_prop_inspect` - Inspect JS object metadata from C.
+- `./qjs_server -w -p 8080` - A C++ web server that runs JS scripts via HTTP.
 
 ## JavaScript Demos
 
